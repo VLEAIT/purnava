@@ -20,3 +20,5 @@ engine=create_engine(
 SessionaLocal=sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
 
+class Base(MappedAsDataclass,DeclarativeBase,kw_only=True):
+    pass
