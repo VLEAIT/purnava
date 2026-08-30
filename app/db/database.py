@@ -20,5 +20,11 @@ engine=create_engine(
 SessionaLocal=sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
 
+class CreateAtMixin:
+    created_at:Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now(),nullable=False,init=False) 
+
+class TimeMixin:
+    update_at:Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now(),nullable=False,init=False)    
+
 class Base(MappedAsDataclass,DeclarativeBase,kw_only=True):
     pass
