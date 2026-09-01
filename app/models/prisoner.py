@@ -1,7 +1,8 @@
 import uuid
+from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, CheckConstraint, ForeignKey, String
+from sqlalchemy import ARRAY, CheckConstraint, DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -23,12 +24,6 @@ class Prisoner(Base, TimeStampMixin, kw_only=True):
         ),
     )
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        doc="Primary key UUID for internal referencing",
-    )
     facility_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("facilities.id", ondelete="CASCADE"),
@@ -67,4 +62,75 @@ class Prisoner(Base, TimeStampMixin, kw_only=True):
     payout_ledgers: Mapped[List["PayoutLedger"]] = relationship(
         "PayoutLedger",
         back_populates="prisoner",
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        doc="Primary key UUID for internal referencing",
+    )
+
+
+class ImpactStory(Base):
+    __tablename__ = "impact_stories"
+
+    __table_args__ = (
+        CheckConstraint(
+            "length(trim(headline)) >= 5",
+            name="check_impact_story_headline_length",
+        ),
+        CheckConstraint(
+            "length(trim(narrative)) >= 20",
+            name="check_impact_story_narrative_length",
+        ),
+        CheckConstraint(
+            "length(trim(rehabilitation_goal)) >= 10",
+            name="check_impact_story_goal_length",
+        ),
+    )
+
+    prisoner_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("prisoners.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+        index=True,
+        doc="Strict 1:1 link to the Prisoner model",
+    )
+
+    headline: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+        doc="Headline displayed on the story card",
+    )
+
+    narrative: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        doc="The artisan's reflections and crafting background",
+    )
+
+    rehabilitation_goal: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        doc="Specific plans for product sales earnings post-release",
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+    )
+
+    prisoner: Mapped[Prisoner] = relationship(
+        "Prisoner",
+        back_populates="impact_story",
     )
