@@ -98,7 +98,10 @@ class ImpactStory(Base):
         index=True,
         doc="Strict 1:1 link to the Prisoner model",
     )
-
+    prisoner: Mapped[Prisoner] = relationship(
+        "Prisoner",
+        back_populates="impact_story",
+    )
     headline: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
@@ -130,7 +133,4 @@ class ImpactStory(Base):
         default=uuid.uuid4,
     )
 
-    prisoner: Mapped[Prisoner] = relationship(
-        "Prisoner",
-        back_populates="impact_story",
-    )
+
