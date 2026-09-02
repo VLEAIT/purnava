@@ -72,6 +72,11 @@ class Prisoner(Base, TimeStampMixin, kw_only=True):
     )
 
 
+    def __repr__(self)->str:
+        return f"<prisoner id={self.id} and  facility={self.facility_id}"
+
+
+
 class ImpactStory(Base):
     __tablename__ = "impact_stories"
 
@@ -132,5 +137,8 @@ class ImpactStory(Base):
         primary_key=True,
         default=uuid.uuid4,
     )
+
+    def __repr__(self):
+        return f"<imapct story id={self.id} and prisoner id={self.id}"
 
 
