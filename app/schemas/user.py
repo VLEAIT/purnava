@@ -32,10 +32,15 @@ class UserBase(BaseModel):
         
 class UserCreate(UserBase):
     password:str
-    conform_password:str
+    confirm_password:str
 
     @model_validator(mode="after")
-    @c
+    def pass_val(self)->"UserCreate":
+        if self.password != self.confirm_password:
+            raise ValueError("pasword and conform password doesnot match")
+        return self
+        
+   
 
 
 
