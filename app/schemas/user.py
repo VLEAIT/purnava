@@ -1,4 +1,4 @@
-from pydantic import BaseModel,Field,UUID4,EmailStr,field_validator
+from pydantic import BaseModel,Field,UUID4,EmailStr,field_validator,model_validator
 from typing import Optional
 from datetime import datetime
 from enum import Enum
@@ -30,6 +30,16 @@ class UserBase(BaseModel):
         return value.title()
 
         
+class UserCreate(UserBase):
+    password:str
+    conform_password:str
+
+    @model_validator(mode="after")
+    @c
+
+
+
+
 
 
 
