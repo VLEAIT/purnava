@@ -1,18 +1,17 @@
 from pydantic import BaseModel,Field,UUID4,EmailStr,field_validator,model_validator
 from typing import Optional
 from datetime import datetime
-from enum import Enum
 import re
+from app.schemas.common import Role
 
-class Role(str,Enum):
-    super_admin="SUPER_ADMIN"
-    prison_admin="PRISON_ADMIN"
-    customer="CUSTOMER"
 
 class UserBase(BaseModel):
+    id:UUID4
     email:EmailStr
     full_name:str
     role:Role
+    facility_id:UUID4
+   
 
     @field_validator("full_name")
     @classmethod
@@ -33,12 +32,19 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password:str
     confirm_password:str
-
     @model_validator(mode="after")
     def pass_val(self)->"UserCreate":
         if self.password != self.confirm_password:
             raise ValueError("pasword and conform password doesnot match")
         return self
+
+class UserResponse(UserBase):
+    is_active:bool
+    model_config={"from_attributes":True}
+    
+    
+    
+
         
    
 
