@@ -11,7 +11,7 @@ class ImpactStoryBase(BaseModel):
     rehabilitation_goal: str
 
 
-class ImpactStoryCreate(ImpactStoryBase):
+class ImpactStoryCreate(ImpactStoryBase): 
     pass
 
 

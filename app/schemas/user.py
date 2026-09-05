@@ -6,7 +6,6 @@ from app.schemas.common import Role
 
 
 class UserBase(BaseModel):
-    id:UUID4
     email:EmailStr
     full_name:str
     role:Role
@@ -39,6 +38,7 @@ class UserCreate(UserBase):
         return self
 
 class UserResponse(UserBase):
+    id:UUID4
     is_active:bool
     model_config={"from_attributes":True}
     
